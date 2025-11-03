@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Container from "./components/Container";
+import Categories from "./components/Categories";
 
 export default function Home() {
   return (
@@ -17,7 +17,7 @@ export default function Home() {
       </header>
 
       <main className="bg-[#ffffff] px-[1.5em] md:px-[2.5em] lg:px-[10.3125em]">
-        <h1 className="">Welcome to My Audiophile Site</h1>
+        <Categories />
       </main>
     </div>
   );
