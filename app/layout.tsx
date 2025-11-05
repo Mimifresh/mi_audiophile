@@ -1,32 +1,29 @@
 import "./globals.css";
+import { CartProvider } from "@/context/CartContext";
+import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
-import Navbar from './components/Navbar';
-import type { Metadata } from 'next';
 
-export const metadata: Metadata = {
-  title: 'MyApp',
-  description: 'Responsive Next.js app with Tailwind CSS and TypeScript',
+export const metadata = {
+  title: "Audiophile",
+  description: "High-end audio equipment store",
 };
-
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en">
-
-      <body
-        className=""
-      >
-      <div className="">
-        <Navbar />
-          <hr />
-        {children}
-        <Footer />
-      </div>
+      <body>
+        {/* ✅ Wrap your entire app inside CartProvider */}
+        <CartProvider>
+          <Navbar />
+          <main className="min-h-screen">{children}</main>
+          <Footer />
+        </CartProvider>
       </body>
     </html>
   );
 }
+

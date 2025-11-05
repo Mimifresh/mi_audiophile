@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Categories from "./components/Categories";
 import Zx9Speaker from "./components/Zx9-Speaker";
-import About from "./components/About";
 
 export default function Home() {
   return (
@@ -21,7 +20,6 @@ export default function Home() {
       <main className="bg-[#ffffff] px-[1.5em] md:px-[2.5em] lg:px-[10.3125em]">
         <Categories />
         <Zx9Speaker />
-        <About />
       </main>
     </div>
   );

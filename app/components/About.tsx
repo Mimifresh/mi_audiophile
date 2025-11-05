@@ -2,7 +2,7 @@
 
 export default function About(){
     return(
-        <div className="py-6 text-center lg:text-left text-black
+        <div className="px-[1.5em] md:px-[2.5em] lg:px-[10.3125em] py-6 text-center lg:text-left text-black
         grid gap-8 lg:grid-cols-2 items-center lg:items-start mb-20">
             <picture className="order-1 lg:order-2">
                 <source media="(min-width:1024px)"
