@@ -1,7 +1,11 @@
 import "./globals.css";
-import { CartProvider } from "@/context/CartContext";
+import { ConvexReactClient } from "convex/react";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import Providers from "./Providers"
+
+
+const convex = new ConvexReactClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 
 export const metadata = {
   title: "Audiophile",
@@ -16,12 +20,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        {/* ✅ Wrap your entire app inside CartProvider */}
-        <CartProvider>
+        <Providers>
           <Navbar />
           <main className="min-h-screen">{children}</main>
           <Footer />
-        </CartProvider>
+        </Providers>
       </body>
     </html>
   );

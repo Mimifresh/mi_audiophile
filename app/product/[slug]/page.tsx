@@ -6,11 +6,14 @@ import Categories from "../../components/Categories";
 import Link from "next/link";
 import GoBackButton from "../../components/GoBackButton";
 import ProductClientSection from "@/app/components/ProductClientSection";
+import { ConvexHttpClient } from "convex/browser";
+import { api } from "@/convex/_generated/api";
 
 // inside ProductPage component
+const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 
 export async function generateStaticParams() {
-  const products = getAllProducts();
+  const products = await convex.query(api.products.getAll);
   return products.map((p) => ({ slug: p.slug }));
 }
 
@@ -19,10 +22,10 @@ export default async function ProductPage({
 }: {
   params: Promise<{ slug: string }>;
 }) {
-  // ✅ Unwrap params Promise (fixes undefined slug issue)
+  // Unwrap params Promise (fixes undefined slug issue)
   const { slug } = await params;
 
-  const product: Product | undefined = getProductBySlug(slug);
+  const product = await convex.query(api.products.getBySlug, { slug })
   if (!product) {
     notFound();
   }
