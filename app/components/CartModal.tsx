@@ -1,8 +1,10 @@
 "use client";
 
 import { useCart } from "@/context/CartContext";
+import { useRouter } from "next/navigation";
 
 export default function CartModal({ open, onClose }: { open: boolean; onClose: () => void }) {
+  const router = useRouter();
   const { cart, removeFromCart, clearCart } = useCart();
 
   if (!open) return null;
@@ -100,7 +102,14 @@ export default function CartModal({ open, onClose }: { open: boolean; onClose: (
             </div>
 
             {/* CHECKOUT */}
-            <button className="bg-[#D87D4A] hover:bg-[#FBAF85] text-white w-full py-3 uppercase font-bold tracking-wide mt-4 rounded">
+            <button
+              onClick={() => {
+                // Navigate to the checkout page
+                onClose();
+                router.push("/checkout");
+              }}
+              className="bg-[#D87D4A] hover:bg-[#FBAF85] text-white w-full py-3 uppercase font-bold tracking-wide mt-4 rounded"
+            >
               Checkout
             </button>
           </div>
