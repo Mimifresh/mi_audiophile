@@ -1,98 +1,110 @@
 "use client";
 
-import Image from "next/image";
 import { useCart } from "@/context/CartContext";
 
-interface Props {
-  onClose: () => void;
-}
+export default function CartModal({ open, onClose }: { open: boolean; onClose: () => void }) {
+  const { cart, removeFromCart, clearCart } = useCart();
 
-export default function CartModal({ onClose }: Props) {
-  const { cart, clearCart, updateQuantity } = useCart();
-
-  const total = cart.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0
-  );
+  if (!open) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-start pt-24 z-50">
-      <div className="bg-white rounded-lg p-6 w-11/12 max-w-md shadow-lg">
+    <div className="fixed inset-0 z-50 flex p-5">
+      {/* === BACKDROP === */}
+      <div
+        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+        onClick={onClose}
+      />
+
+      {/* === RIGHT SIDEBAR (desktop/tablet) / FULLSCREEN (mobile) === */}
+      <div
+        className="
+          relative ml-auto bg-white shadow-xl 
+          w-full sm:w-[420px] 
+          h-full sm:h-auto 
+          sm:my-10 sm:rounded-xl 
+          p-6 animate-slideLeft
+        "
+      >
+        {/* === HEADER === */}
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-lg font-bold uppercase">
+          <h2 className="text-xl font-bold uppercase">
             Cart ({cart.length})
           </h2>
-          <button
-            onClick={clearCart}
-            className="text-gray-500 text-sm hover:text-[#D87D4A]"
-          >
-            Remove all
-          </button>
+
+          {cart.length > 0 && (
+            <button 
+              onClick={clearCart}
+              className="text-sm text-gray-500 hover:text-black"
+            >
+              Remove all
+            </button>
+          )}
         </div>
 
-        {/* Cart items */}
-        <div className="space-y-4 max-h-72 overflow-y-auto">
-          {cart.map((item) => (
-            <div
-              key={item.slug}
-              className="flex items-center justify-between"
-            >
-              <div className="flex items-center gap-4">
-                <Image
-                  src={item.image.replace("./assets", "/assets")}
-                  alt={item.name}
-                  width={50}
-                  height={50}
-                  className="rounded-md"
-                />
-                <div>
-                  <p className="font-bold text-sm">{item.name}</p>
-                  <p className="text-gray-500 text-sm">
-                    $ {item.price.toLocaleString()}
-                  </p>
+        {/* === EMPTY CART === */}
+        {cart.length === 0 && (
+          <div className="py-20 text-center text-gray-500">
+            Your cart is empty.
+          </div>
+        )}
+
+        {/* === CART ITEMS === */}
+        {cart.length > 0 && (
+          <div className="space-y-6">
+            {cart.map((item) => (
+              <div key={item.slug} className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="w-16 h-16 bg-gray-200 rounded">
+                      {/* Normalize image paths: convert relative './assets/..' to '/assets/..' (public folder)
+                          and provide a fallback placeholder if image is missing. */}
+                      {
+                        (() => {
+                          const src = item.image
+                            ? item.image.replace(/^\.\/assets/, '/assets')
+                            : '/assets/placeholder.png';
+                          return (
+                            <img
+                              src={src}
+                              alt={item.name}
+                              className="w-full h-full object-cover rounded"
+                            />
+                          );
+                        })()
+                      }
+                    </div>
+
+                  <div>
+                    <p className="font-bold uppercase text-sm">{item.name}</p>
+                    <p className="text-sm text-gray-500">${item.price.toLocaleString()}</p>
+                  </div>
+                </div>
+
+                {/* QUANTITY BOX */}
+                <div className="flex items-center bg-gray-100 px-2 py-1 gap-2">
+                  <button className="text-sm">-</button>
+                  <p>{item.quantity}</p>
+                  <button className="text-sm">+</button>
                 </div>
               </div>
+            ))}
 
-              <div className="flex items-center gap-3 bg-gray-100 px-3 py-1 rounded">
-                <button
-                  onClick={() => updateQuantity(item.slug, item.quantity - 1)}
-                  className="text-gray-500 hover:text-[#D87D4A]"
-                >
-                  -
-                </button>
-                <span className="font-bold">{item.quantity}</span>
-                <button
-                  onClick={() => updateQuantity(item.slug, item.quantity + 1)}
-                  className="text-gray-500 hover:text-[#D87D4A]"
-                >
-                  +
-                </button>
-              </div>
+            {/* TOTAL */}
+            <div className="flex justify-between mt-6 font-bold">
+              <p>TOTAL</p>
+              <p>
+                $
+                {cart
+                  .reduce((sum, p) => sum + p.price * p.quantity, 0)
+                  .toLocaleString()}
+              </p>
             </div>
-          ))}
-        </div>
 
-        {/* Total */}
-        <div className="flex justify-between mt-6">
-          <span className="uppercase text-gray-500">Total</span>
-          <span className="font-bold text-lg">
-            $ {total.toLocaleString()}
-          </span>
-        </div>
-
-        {/* Checkout */}
-        <button
-          className="w-full bg-[#D87D4A] hover:bg-[#FBAF85] text-white uppercase tracking-widest text-sm font-bold px-6 py-3 mt-6 rounded transition"
-        >
-          Checkout
-        </button>
-
-        <button
-          onClick={onClose}
-          className="block mx-auto mt-4 text-gray-400 text-sm hover:text-black"
-        >
-          Close
-        </button>
+            {/* CHECKOUT */}
+            <button className="bg-[#D87D4A] hover:bg-[#FBAF85] text-white w-full py-3 uppercase font-bold tracking-wide mt-4 rounded">
+              Checkout
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

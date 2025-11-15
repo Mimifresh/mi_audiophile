@@ -2,14 +2,13 @@
 
 import { useState } from "react";
 import { useCart } from "@/context/CartContext";
-import CartModal from "../components/CartModal";
 import QuantitySelector from "../components/QuantitySelector";
 import { Product } from "../types/product";
+import toast from "react-hot-toast";
 
 export default function ProductClientSection({ product }: { product: Product }) {
   const { addToCart } = useCart();
   const [quantity, setQuantity] = useState(1);
-  const [showCart, setShowCart] = useState(false);
 
   const handleAddToCart = () => {
     addToCart({
@@ -19,7 +18,7 @@ export default function ProductClientSection({ product }: { product: Product }) 
       image: product.image.desktop,
       quantity,
     });
-    setShowCart(true);
+    toast.success(`${product.name} added to cart!`);
   };
 
   return (
@@ -33,8 +32,6 @@ export default function ProductClientSection({ product }: { product: Product }) 
           Add to Cart
         </button>
       </div>
-
-      {showCart && <CartModal onClose={() => setShowCart(false)} />}
     </>
   );
 }

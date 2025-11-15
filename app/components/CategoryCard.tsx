@@ -6,12 +6,14 @@ type CategoryCardProps = {
   href: string;                    // e.g. /headphones
   imgSrc: string;                  // public path or remote URL
   imgAlt: string;
+  onClick?: () => void;
 };
 
-export default function CategoryCard({ title, href, imgSrc, imgAlt }: CategoryCardProps) {
+export default function CategoryCard({ title, href, imgSrc, imgAlt, onClick }: CategoryCardProps) {
   return (
     <Link
       href={href}
+      onClick={onClick}
       className="
         group relative block rounded-xl bg-neutral-100
         transition-shadow hover:shadow-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70

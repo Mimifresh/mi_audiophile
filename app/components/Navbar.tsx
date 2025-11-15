@@ -4,11 +4,19 @@ import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Menu, ShoppingCart, X } from 'lucide-react';
+import { useCart } from '@/context/CartContext';
+import CartModal from './CartModal';
+import Categories from './Categories';
 
 export default function Navbar() {
   const pathname = usePathname();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { cart, badgeCount } = useCart();
+  const [openCartModal, setOpenCartModal] = useState(false);
+
+  // Badge should reflect number of Add-to-Cart clicks (badgeCount).
+  const totalItems = typeof badgeCount === 'number' ? badgeCount : 0;
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
@@ -80,9 +88,14 @@ export default function Navbar() {
         </ul>
 
         {/* ===== RIGHT: Cart Icon ===== */}
-        <Link href="/cart" className="relative text-white">
+        <button onClick={() => setOpenCartModal(true)} className="relative text-white">
           <ShoppingCart className="h-6 w-6" />
-        </Link>
+          {totalItems > 0 && (
+            <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold">
+              {totalItems}
+            </span>
+          )}
+        </button>
       </div>
 
       {/* ===== DESKTOP LINKS ===== */}
@@ -92,21 +105,12 @@ export default function Navbar() {
 
       {/* ===== MOBILE/TABLET SIDE MENU ===== */}
       {isMenuOpen && (
-        <div className="lg:hidden fixed inset-0 bg-black/95 backdrop-blur-sm flex flex-col items-center justify-center text-white space-y-6 text-lg font-semibold uppercase">
-          <Link href="/" onClick={() => setIsMenuOpen(false)}>
-            Home
-          </Link>
-          <Link href="/headphones" onClick={() => setIsMenuOpen(false)}>
-            Headphones
-          </Link>
-          <Link href="/speakers" onClick={() => setIsMenuOpen(false)}>
-            Speakers
-          </Link>
-          <Link href="/earphones" onClick={() => setIsMenuOpen(false)}>
-            Earphones
-          </Link>
+        <div className="px-4 bg-white">
+          <Categories onClose={() => setIsMenuOpen(false)} />
         </div>
       )}
+      {/* ===== CART MODAL ===== */}
+      <CartModal open={openCartModal} onClose={() => setOpenCartModal(false)} />
     </nav>
   );
 }

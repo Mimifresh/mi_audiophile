@@ -1,11 +1,8 @@
 import "./globals.css";
-import { ConvexReactClient } from "convex/react";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Providers from "./Providers"
-
-
-const convex = new ConvexReactClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
+import { Toaster } from "react-hot-toast";
 
 export const metadata = {
   title: "Audiophile",
@@ -21,6 +18,7 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <Providers>
+          <Toaster position="top-center" />
           <Navbar />
           <main className="min-h-screen">{children}</main>
           <Footer />

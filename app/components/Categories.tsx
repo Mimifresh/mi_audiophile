@@ -1,6 +1,5 @@
 
 import CategoryCard from "./CategoryCard";
-
 const categories = [
   {
     title: "HEADPHONES" as const,
@@ -22,7 +21,7 @@ const categories = [
   },
 ];
 
-export default function Categories() {
+export default function Categories({ onClose }: { onClose?: () => void }) {
   return (
     <section aria-label="Shop by category" className="py-12">
       <div
@@ -34,7 +33,7 @@ export default function Categories() {
         "
       >
         {categories.map((c) => (
-          <CategoryCard key={c.title} {...c} />
+          <CategoryCard key={c.title} {...c} onClick={onClose} />
         ))}
       </div>
     </section>

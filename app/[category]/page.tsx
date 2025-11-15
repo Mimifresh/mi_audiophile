@@ -27,7 +27,7 @@ export default async function CategoryPage({
   }
 
   return (
-    <div className="pb-24">
+    <div className="pb-10">
       <PageHeader title={category} />
 
       <section className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 mt-24 space-y-32">
