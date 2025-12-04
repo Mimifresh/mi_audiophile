@@ -9,10 +9,18 @@ import ProductClientSection from "@/app/components/ProductClientSection";
 import { ConvexHttpClient } from "convex/browser";
 import { api } from "@/convex/_generated/api";
 
-// inside ProductPage component
-const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
+function getConvex() {
+  const url = process.env.NEXT_PUBLIC_CONVEX_URL;
+  if (!url) {
+    throw new Error(
+      "Environment variable NEXT_PUBLIC_CONVEX_URL is not set. Set it in Vercel/your environment to your Convex deployment URL."
+    );
+  }
+  return new ConvexHttpClient(url);
+}
 
 export async function generateStaticParams() {
+  const convex = getConvex();
   const products = await convex.query(api.products.getAll);
   return products.map((p) => ({ slug: p.slug }));
 }
@@ -25,6 +33,7 @@ export default async function ProductPage({
   // Unwrap params Promise (fixes undefined slug issue)
   const { slug } = await params;
 
+  const convex = getConvex();
   const product = await convex.query(api.products.getBySlug, { slug })
   if (!product) {
     notFound();
