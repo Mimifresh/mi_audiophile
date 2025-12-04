@@ -12,16 +12,20 @@ import { api } from "@/convex/_generated/api";
 function getConvex() {
   const url = process.env.NEXT_PUBLIC_CONVEX_URL;
   if (!url) {
-    throw new Error(
-      "Environment variable NEXT_PUBLIC_CONVEX_URL is not set. Set it in Vercel/your environment to your Convex deployment URL."
-    );
+    return null;
   }
   return new ConvexHttpClient(url);
 }
 
 export async function generateStaticParams() {
   const convex = getConvex();
-  const products = await convex.query(api.products.getAll);
+  let products;
+  if (convex) {
+    products = await convex.query(api.products.getAll);
+  } else {
+    // Fallback to local static data when Convex URL is not configured (useful for builds/previews)
+    products = await getAllProducts();
+  }
   return products.map((p) => ({ slug: p.slug }));
 }
 
@@ -34,10 +38,13 @@ export default async function ProductPage({
   const { slug } = await params;
 
   const convex = getConvex();
-  const product = await convex.query(api.products.getBySlug, { slug })
-  if (!product) {
-    notFound();
+  let product;
+  if (convex) {
+    product = await convex.query(api.products.getBySlug, { slug });
+  } else {
+    product = await getProductBySlug(slug);
   }
+  if (!product) notFound();
 
   return (
     <main className="max-w-6xl mx-auto px-6 py-24">
